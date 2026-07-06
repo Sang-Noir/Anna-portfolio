@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Anna Kovalenko — 2D Game Artist & Concept Artist based in Kyiv">
+  <title>Anna Kovalenko — Game Artist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #07070F;
+      --surface:    #0C0C1C;
+      --card:       #101024;
+      --border:     #1A1A30;
+      --accent:     #3D72F0;
+      --accent-dim: rgba(61,114,240,.10);
+      --accent-hi:  #5A8BF5;
+      --text-1:     #E4E8F5;
+      --text-2:     #cdcdcd;
+      --text-3:     #545767;
+      --nav-h:      3.875rem;
+      --ease:       cubic-bezier(.4,0,.2,1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      /* Fluid scaling: 1rem grows/shrinks with the viewport, so fonts,
+         spacing, radii and shadows scale together with screen resolution.
+         ~16px at ~1440px-wide desktops (original design baseline),
+         down to 15px on small laptops, up to 22px on large 4K monitors.
+         Combined with the extra grid columns below (3/4/5 on progressively
+         bigger screens), the portfolio gets both bigger tiles AND more
+         of them, instead of stretching the same tiles thin. */
+      font-size: clamp(15px, 12.45px + 0.25vw, 22px);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h); z-index: 300;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.75rem;
+      background: transparent;
+      border-bottom: 0.0625rem solid transparent;
+      transition: background .4s var(--ease), border-color .4s var(--ease),
+                  backdrop-filter .4s var(--ease);
+    }
+    .nav.solid {
+      background: rgba(7,7,15,.88);
+      border-color: var(--border);
+      backdrop-filter: blur(1rem);
+      -webkit-backdrop-filter: blur(1rem);
+    }
+    .nav-logo {
+      font-family: 'Manrope', sans-serif; font-size: 0.9375rem; font-weight: 700;
+      color: var(--text-1); text-decoration: none;
+      transition: color .25s;
+    }
+    .nav-logo:hover { color: var(--accent); }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 0.125rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.6875rem; font-weight: 500; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--text-2);
+      text-decoration: none; padding: 0.4375rem 0.8125rem; border-radius: 0.125rem;
+      transition: color .25s var(--ease), background .25s var(--ease);
+    }
+    .nav-links a:hover { color: var(--text-1); background: var(--accent-dim); }
+    .nav-links a.active { color: var(--text-1); }
+
+    /* ── HERO ────────────────────────────────────── */
+    #intro {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: var(--nav-h) 2.5rem 6.25rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 55% at 50% 38%, rgba(61,114,240,.07) 0%, transparent 65%),
+        radial-gradient(ellipse 30% 30% at 80% 72%, rgba(61,114,240,.03) 0%, transparent 60%),
+        var(--bg);
+    }
+    .hero-label {
+      font-size: 0.6562rem; font-weight: 500; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 1.75rem;
+      opacity: 0; animation: fadeUp .7s .2s var(--ease) forwards;
+    }
+    .hero-name {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(3.375rem, 10vw, 7.25rem);
+      font-weight: 800; line-height: .94; letter-spacing: -.035em;
+      margin-bottom: 1.625rem;
+      opacity: 0; animation: fadeUp .7s .35s var(--ease) forwards;
+    }
+    .hero-role {
+      display: flex; align-items: center; justify-content: center;
+      height: 1.75rem; margin-bottom: 3.25rem;
+      font-size: 0.9375rem; color: var(--text-2); letter-spacing: .02em;
+      opacity: 0; animation: fadeUp .7s .5s var(--ease) forwards;
+    }
+    .tw-cursor {
+      border-right: 0.125rem solid var(--accent);
+      padding-right: 0.1875rem;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { border-color: transparent; } }
+    .hero-actions {
+      display: flex; gap: 0.625rem; justify-content: center; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp .7s .65s var(--ease) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(0.875rem); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .scroll-arrow {
+      position: absolute; bottom: 2.25rem; left: 50%; transform: translateX(-50%);
+      color: var(--text-3); animation: bob 2.2s ease-in-out infinite;
+      opacity: 0; animation: bob 2.2s .9s ease-in-out infinite, fadeIn .6s .9s forwards;
+    }
+    @keyframes bob {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(0.4375rem); }
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── BUTTONS ─────────────────────────────────── */
+    .btn {
+      font-size: 0.7188rem; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; text-decoration: none;
+      padding: 0.75rem 1.625rem; border-radius: 0.125rem;
+      border: 0.0625rem solid transparent; cursor: pointer;
+      transition: background .25s var(--ease), border-color .25s var(--ease),
+                  color .25s var(--ease), transform .2s var(--ease),
+                  box-shadow .25s var(--ease);
+      display: inline-flex; align-items: center; gap: 0.4375rem;
+      font-family: 'Inter', sans-serif; position: relative;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-fill {
+      background: var(--accent); color: #07070F; border-color: var(--accent);
+    }
+    .btn-fill:hover {
+      background: var(--accent-hi); border-color: var(--accent-hi);
+      box-shadow: 0 0 1.5rem rgba(61,114,240,.25);
+    }
+    .btn-line {
+      background: transparent; color: var(--text-2); border-color: var(--border);
+    }
+    .btn-line:hover {
+      background: var(--accent-dim); border-color: var(--accent);
+      color: var(--text-1);
+    }
+
+    /* ── SECTION ─────────────────────────────────── */
+    .section-wrap {
+      max-width: 88.75rem; margin: 0 auto; padding: 6rem 2.75rem;
+      border-top: 0.0625rem solid var(--border);
+    }
+    .s-head {
+      display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2.75rem;
+    }
+    .s-eyebrow {
+      font-size: 0.625rem; font-weight: 500; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--accent); flex-shrink: 0;
+    }
+    .s-title {
+      font-family: 'Manrope', sans-serif; font-size: 2.125rem;
+      font-weight: 700; letter-spacing: -.02em;
+    }
+    .s-rule { flex: 1; height: 0.0625rem; background: var(--border); }
+
+    /* ── REVEAL ANIMATION ────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(1.125rem);
+      transition: opacity .6s var(--ease), transform .6s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── PORTFOLIO ───────────────────────────────── */
+    .filter-row {
+      display: flex; flex-wrap: wrap; gap: 0.375rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+    .f-btn {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; padding: 0.4375rem 1.25rem;
+      border-radius: 0.125rem; background: transparent;
+      border: 0.0625rem solid var(--border); color: var(--text-2);
+      cursor: pointer;
+      transition: background .25s var(--ease), border-color .25s var(--ease),
+                  color .25s var(--ease), box-shadow .25s var(--ease);
+      font-family: 'Inter', sans-serif;
+    }
+    .f-btn:hover {
+      background: var(--accent-dim); border-color: var(--accent);
+      color: var(--text-1);
+    }
+    .f-btn.on {
+      background: var(--accent); border-color: var(--accent);
+      color: #07070F;
+      box-shadow: 0 0 1.25rem rgba(61,114,240,.22);
+    }
+
+    .p-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1rem;
+    }
+    .p-card {
+      position:relative;
+      background:linear-gradient(180deg,#151827,#101522);
+      border-radius:1rem;
+      overflow:hidden;
+      aspect-ratio:4/3;
+      cursor:pointer;
+      transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
+      border:0.0625rem solid rgba(255,255,255,.06);
+    }
+    .p-card:hover {
+      transform: translateY(-0.5rem);
+      box-shadow: 0 0.75rem 2.5rem rgba(0,0,0,.5);
+    }
+
+    /* subtle blue glow at bottom to indicate clickability */
+    .p-card::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 36%; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 100%,
+        rgba(61,114,240,0.20) 0%, rgba(61,114,240,0.10) 25%,
+        rgba(61,114,240,0.04) 50%, transparent 100%);
+      filter: blur(0.75rem);
+      opacity: 0.7;
+      transition: opacity .28s var(--ease), transform .28s var(--ease);
+      transform: translateZ(0);
+    }
+    .p-card:hover::after { opacity: 1; }
+    .p-card.hide { display: none; }
+    .p-card img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      display:block;
+      transition:transform .45s var(--ease);
+      background:transparent;
+}
+    .p-card:hover img { transform: scale(1.06); }
+    .p-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top,
+        rgba(7,7,15,.92) 0%, rgba(61,114,240,.07) 42%, transparent 66%);
+      opacity: 0;
+      transition: opacity .3s var(--ease);
+      display: flex; align-items: flex-end; padding: 0.875rem 1rem;
+    }
+    .p-card:hover .p-ov { opacity: 1; }
+    .p-info {
+      transform: translateY(0.375rem);
+      transition: transform .3s var(--ease);
+    }
+    .p-card:hover .p-info { transform: translateY(0); }
+    .p-title {
+      font-family: 'Manrope', sans-serif; font-size: 0.8125rem;
+      font-weight: 600; color: var(--text-1); display: block; margin-bottom: 0.125rem;
+    }
+    .p-cat {
+      font-size: 0.7188rem; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--accent);
+    }
+    .p-empty {
+      grid-column: 1/-1; min-height: 16.25rem;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.625rem;
+      border: 0.0625rem dashed var(--border); border-radius: 0.1875rem;
+      color: var(--text-3); font-size: 0.75rem;
+    }
+    .p-more {
+      width: 2.625rem; height: 2.625rem; margin: 1.75rem auto 0;
+      display: none; align-items: center; justify-content: center;
+      background: transparent; border: 0.0625rem solid var(--border);
+      border-radius: 50%; color: var(--text-2); cursor: pointer;
+      transition: color .25s var(--ease), border-color .25s var(--ease),
+                  background .25s var(--ease), transform .25s var(--ease),
+                  box-shadow .25s var(--ease);
+    }
+    .p-more.show { display: flex; }
+    .p-more:hover {
+      color: var(--text-1); border-color: var(--accent);
+      background: var(--accent-dim); transform: translateY(0.1875rem);
+      box-shadow: 0 0 1rem rgba(61,114,240,.15);
+    }
+
+    /* ── EXPERIENCE ──────────────────────────────── */
+    .exp-tabs {
+      display: flex; justify-content: center; gap: 0; margin-bottom: 2.25rem;
+      border-bottom: 0.0625rem solid var(--border);
+    }
+    .e-tab {
+      font-size: 1rem; font-weight: 500; letter-spacing: .09em;
+      text-transform: uppercase; padding: 0.625rem 1.125rem;
+      background: none; border: none;
+      color: var(--text-2); cursor: pointer;
+      position: relative;
+      transition: color .25s var(--ease);
+      font-family: 'Inter', sans-serif;
+    }
+    .e-tab::after {
+      content: ''; position: absolute; bottom: -0.0625rem; left: 0; right: 0;
+      height: 0.125rem; background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .28s var(--ease);
+    }
+    .e-tab:hover { color: var(--text-1); }
+    .e-tab.on { color: var(--text-1); }
+    .e-tab.on::after { transform: scaleX(1); }
+
+    .e-panel { display: none; }
+    .e-panel.on { display: block; animation: fadeUp .25s var(--ease); }
+
+    .e-list { display: flex; flex-direction: column; }
+    .e-item {
+      display: grid; grid-template-columns: 4rem 1fr;
+      gap: 0 1.75rem; padding: 1.625rem 0;
+      border-bottom: 0.0625rem solid var(--border);
+      transition: background .25s var(--ease);
+    }
+    .e-item:last-child { border-bottom: none; }
+    .e-logo {
+      width: 4.0625rem; height: 4.0625rem; margin-top: 0.1875rem;
+      background: var(--card); border: 0.0625rem solid var(--border);
+      border-radius: 0.1875rem; display: flex; align-items: center;
+      justify-content: center; overflow: hidden;
+      transition: border-color .25s var(--ease), background .25s var(--ease);
+    }
+    .e-item:hover .e-logo { border-color: var(--accent); background: rgba(61,114,240,.05); }
+    .e-logo img { width: 100%; height: 100%; object-fit: contain; padding: 0.375rem; }
+    .e-logo-init {
+      display: none;
+    }
+    .e-role {
+      font-family: 'Manrope', sans-serif; font-size: 1.25rem;
+      font-weight: 700; color: var(--text-1); margin-bottom: 0.1875rem;
+    }
+    .e-company { font-size: 0.75rem; font-weight: 500; color: var(--accent); margin-bottom: 0.3125rem; }
+    .e-dates {
+      font-size: 0.8125rem; letter-spacing: .07em; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 0.625rem;
+    }
+    .e-desc { font-size: 0.875rem; line-height: 1.72; color: var(--text-2); }
+
+    /* ── ABOUT ───────────────────────────────────── */
+    .about-cols {
+      display: grid; grid-template-columns: 16.25rem 1fr;
+      gap: 3.5rem; align-items: start; margin-bottom: 3.75rem;
+    }
+    .a-photo {
+      width: 100%; aspect-ratio: 3/4;
+      background: transparent; border-radius: 0.1875rem;
+      border: none;
+      overflow: hidden; display: flex;
+      align-items: center; justify-content: center;
+      color: var(--text-3); font-size: 0.6875rem; text-align: center;
+    }
+    .a-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .a-photo-hint p { margin-top: 0.5rem; line-height: 1.6; font-size: 0.6875rem; }
+
+    .a-name {
+      font-family: 'Manrope', sans-serif; font-size: 2.625rem;
+      font-weight: 800; letter-spacing: -.025em; line-height: 1.02;
+      margin-bottom: 0.5rem;
+    }
+    .a-title {
+      font-size: 0.6875rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent); font-weight: 500; margin-bottom: 1.75rem;
+    }
+    .a-bio { font-size: 0.9375rem; line-height: 1.82; color: var(--text-2); margin-bottom: 1.75rem; }
+    .a-bio p + p { margin-top: 0.8125rem; }
+
+    .a-stats {
+      display: flex; gap: 2rem; margin-bottom: 1.75rem;
+      padding: 1.25rem 0; border-top: 0.0625rem solid var(--border); border-bottom: 0.0625rem solid var(--border);
+    }
+    .a-stat { display: flex; flex-direction: column; gap: 0.25rem; }
+    .a-stat-n {
+      font-family: 'Manrope', sans-serif; font-size: 1.625rem;
+      font-weight: 800; letter-spacing: -.02em; color: var(--text-1);
+    }
+    .a-stat-l {
+      font-size: 0.625rem; font-weight: 500; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--text-3);
+    }
+
+    .skill-row { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-bottom: 2rem; }
+    .s-tag {
+      font-size: 0.625rem; font-weight: 500; letter-spacing: .07em;
+      text-transform: uppercase; padding: 0.3125rem 0.6875rem;
+      border: 0.0625rem solid var(--border); border-radius: 0.125rem; color: var(--text-2);
+      transition: border-color .25s var(--ease), color .25s var(--ease),
+                  background .25s var(--ease);
+    }
+    .s-tag:hover {
+      border-color: var(--accent); color: var(--text-1);
+      background: var(--accent-dim);
+    }
+
+    .sw-blocks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.75rem;
+    }
+    .sw-block { border-top: 0.0625rem solid var(--border); padding-top: 3rem; }
+    .sw-label {
+      font-size: 0.625rem; font-weight: 500; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 1.125rem;
+    }
+    .sw-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem 1.25rem;
+    }
+    .sw-item {
+      display: flex; align-items: center; gap: 0.5625rem;
+      font-size: 0.75rem; font-weight: 500; color: var(--text-2);
+      transition: color .25s var(--ease);
+    }
+    @media (max-width: 880px) {
+      .sw-blocks { grid-template-columns: 1fr; }
+      .sw-row { grid-template-columns: 1fr; }
+    }
+    .sw-item:hover { color: var(--text-1); }
+    .sw-box {
+      width: 2rem; height: 2rem;
+      background: var(--card); border: 0.0625rem solid var(--border);
+      border-radius: 0.25rem; display: flex; align-items: center;
+      justify-content: center; font-family: 'Manrope', sans-serif;
+      font-size: 0.5625rem; font-weight: 700; color: var(--accent);
+      letter-spacing: .02em;
+      transition: border-color .25s var(--ease), background .25s var(--ease),
+                  box-shadow .25s var(--ease);
+    }
+    .sw-item:hover .sw-box {
+      border-color: var(--accent); background: var(--accent-dim);
+      box-shadow: 0 0 0.75rem rgba(61,114,240,.18);
+    }
+
+    /* ── CONTACT ─────────────────────────────────── */
+    #contact { text-align: center; }
+    .c-intro {
+      font-size: 0.875rem; color: var(--text-2); margin-bottom: 1.75rem;
+      letter-spacing: .02em;
+    }
+    .c-email {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(1.375rem, 4.5vw, 3rem);
+      font-weight: 700; letter-spacing: -.015em;
+      color: var(--text-1); text-decoration: none;
+      border-bottom: 0.125rem solid transparent;
+      display: inline-block; margin-bottom: 2.75rem;
+      transition: color .3s var(--ease), border-color .3s var(--ease);
+    }
+    .c-email:hover { color: var(--accent); border-color: var(--accent); }
+
+    .social-row { display: flex; gap: 0.625rem; justify-content: center; flex-wrap: wrap; }
+    .soc-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.7188rem; font-weight: 500; letter-spacing: .05em;
+      color: var(--text-2); text-decoration: none;
+      padding: 0.5625rem 1.125rem; border: 0.0625rem solid var(--border);
+      border-radius: 0.125rem;
+      transition: color .25s var(--ease), border-color .25s var(--ease),
+                  background .25s var(--ease), box-shadow .25s var(--ease);
+    }
+    .soc-link:hover {
+      color: var(--text-1); border-color: var(--accent);
+      background: var(--accent-dim);
+      box-shadow: 0 0 1rem rgba(61,114,240,.15);
+    }
+    .soc-link svg { flex-shrink: 0; }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    footer {
+      border-top: 0.0625rem solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2.75rem; max-width: 88.75rem; margin: 0 auto;
+    }
+    .f-copy { font-size: 0.6875rem; color: var(--text-3); }
+    .f-top {
+      font-size: 0.6875rem; font-weight: 500; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--text-3);
+      text-decoration: none;
+      transition: color .25s var(--ease);
+    }
+    .f-top:hover { color: var(--accent); }
+
+    /* ── LIGHTBOX ────────────────────────────────── */
+    .lb {
+      position: fixed; inset: 0;
+      background: rgba(4,4,10,.97);
+      z-index: 999; display: none;
+      align-items: center; justify-content: center;
+      padding: 3rem;
+      transition: opacity .3s var(--ease);
+    }
+    .lb.open { display: flex; animation: fadeIn .25s var(--ease); }
+    .lb-box {
+      position: relative; width: min(61.25rem, 92vw); max-height: 88vh;
+      cursor: default; background: var(--surface);
+      border: 0.0625rem solid var(--border); border-radius: 0.25rem;
+      box-shadow: 0 1.5rem 5rem rgba(0,0,0,.55);
+      overflow-y: auto; overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) rgba(7,7,15,.45);
+    }
+    .lb-box::-webkit-scrollbar { width: 0.5rem; }
+    .lb-box::-webkit-scrollbar-track {
+      background: rgba(7,7,15,.45);
+      border-left: 0.0625rem solid rgba(26,26,48,.55);
+    }
+    .lb-box::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 62.4375rem;
+      border: 0.125rem solid rgba(7,7,15,.45);
+    }
+    .lb-box::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    .lb-head {
+      position: sticky; top: 0; z-index: 2;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem;
+      padding: 1.375rem 1.5rem; background: rgba(12,12,28,.94);
+      border-bottom: 0.0625rem solid var(--border);
+      backdrop-filter: blur(0.875rem); -webkit-backdrop-filter: blur(0.875rem);
+    }
+    .lb-cat {
+      display: inline-block; margin-bottom: 0.5rem;
+      font-size: 0.625rem; font-weight: 500; letter-spacing: .13em;
+      text-transform: uppercase; color: var(--accent);
+    }
+    .lb-title {
+      font-family: 'Manrope', sans-serif; font-size: clamp(1.5rem, 4vw, 2.625rem);
+      font-weight: 800; line-height: 1.02; letter-spacing: -.025em;
+    }
+    .lb-canvas {
+      display: flex; flex-direction: column; gap: 1.75rem;
+      padding: 1.75rem 1.5rem 2.125rem;
+    }
+    .lb-block-img {
+      width: 100%; display: block; object-fit: contain;
+      border-radius: 0.1875rem; background: var(--card);
+      border: 0.0625rem solid var(--border);
+    }
+    .lb-block-text {
+      max-width: none; margin: 0;
+      font-size: 0.9375rem; line-height: 1.2; color: var(--text-2);
+      text-align: left;
+    }
+    .lb-block-text p + p { margin-top: 0.3125rem; }
+    .lb-meta {
+      max-width: none; width: auto;
+      margin: 0 -1.5rem -2.125rem;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+      padding: 1rem 1.5rem;
+      border: none; border-top: 0.0625rem solid var(--border);
+      border-radius: 0 0 0.1875rem 0.1875rem;
+      background: rgba(16,16,36,.55);
+    }
+    .lb-meta-row {
+      display: flex; flex-direction: column; gap: 0.25rem;
+      font-size: 0.75rem; color: var(--text-2);
+      text-align: left; padding: 0 1rem;
+      border-left: 0.0625rem solid var(--border);
+    }
+    .lb-meta-row:first-child { border-left: none; padding-left: 0; }
+    .lb-meta-row span:first-child { color: var(--text-3); text-transform: uppercase; letter-spacing: .1em; font-size: 0.625rem; }
+    .lb-empty {
+      min-height: 13.75rem; display: flex; align-items: center; justify-content: center;
+      border: 0.0625rem dashed var(--border); color: var(--text-3); font-size: 0.75rem;
+    }
+    .lb-x {
+      font-size: 1.75rem; background: none; border: none;
+      color: var(--text-2); cursor: pointer; line-height: 1;
+      transition: color .2s var(--ease);
+    }
+    .lb-x:hover { color: var(--text-1); }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media (min-width: 2340px) {
+      .p-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      /* Below ~2340px (up to 4 columns) the base fluid scale from the
+         <html> rule stays untouched — that tier looks right as-is.
+         From here up (5-column tier) we bump the whole site scale
+         back up ~20%, since a 5-across grid on an ultra-wide monitor
+         needs it. */
+      html { font-size: clamp(18px, 14.94px + 0.3vw, 26px); }
+    }
+    @media (min-width: 1900px) and (max-width: 2339px) {
+      .p-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1440px) and (max-width: 1899px) {
+      .p-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 900px) {
+      .about-cols { grid-template-columns: 1fr; }
+      .a-photo { max-width: 13.75rem; aspect-ratio: 1/1; }
+      .p-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .lb { padding: 1.5rem; }
+      .lb-head { padding: 1.125rem; }
+      .lb-canvas { padding: 1.375rem 1.125rem 1.75rem; }
+      .lb-meta { margin: 0 -1.125rem -1.75rem; padding: 0.875rem 1.125rem; }
+      .lb-meta-row { padding: 0 0.75rem; }
+    }
+    @media (max-width: 640px) {
+      .nav { padding: 0 1.25rem; }
+      .nav-links { display: none; }
+      .section-wrap { padding: 4.5rem 1.25rem; }
+      .hero-name { font-size: 3.25rem; }
+      .p-grid { grid-template-columns: 1fr; }
+      .e-item { grid-template-columns: 1fr; }
+      .e-logo { display: none; }
+      footer { padding: 1rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="#intro">Anna <span>Kovalenko</span></a>
+  <ul class="nav-links">
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<section id="intro">
+  <p class="hero-label">Kyiv, Ukraine · Available for work</p>
+  <h1 class="hero-name">Anna<br>Kovalenko</h1>
+  <div class="hero-role">
+    <span class="tw-cursor" id="tw"></span>
+  </div>
+  <div class="hero-actions">
+    <a class="btn btn-fill" href="#portfolio">View Portfolio</a>
+    <a class="btn btn-line" href="#contact">Get in Touch</a>
+  </div>
+  <div class="scroll-arrow">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── PORTFOLIO ─────────────────────────────────────────────── -->
+<section id="portfolio">
+  <div class="section-wrap">
+    <div class="s-head reveal">
+      <h2 class="s-title">Portfolio</h2>
+      <div class="s-rule"></div>
+    </div>
+    <div class="filter-row reveal">
+      <button class="f-btn on" data-f="all">All</button>
+      <button class="f-btn" data-f="professional">Professional</button>
+      <button class="f-btn" data-f="personal">Personal</button>
+    </div>
+    <div class="p-grid reveal" id="p-grid"></div>
+    <button class="p-more" id="p-more" type="button" aria-label="Show next portfolio works">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ────────────────────────────────────────────── -->
+<section id="experience">
+  <div class="section-wrap">
+    <div class="s-head reveal">
+      <h2 class="s-title">Experience</h2>
+      <div class="s-rule"></div>
+    </div>
+    <div class="exp-tabs reveal">
+      <button class="e-tab on" data-ep="pro">Professional</button>
+      <button class="e-tab" data-ep="edu">Education</button>
+    </div>
+    <div class="e-panel on" id="ep-pro">
+      <div class="e-list" id="exp-pro-list"></div>
+      <button class="p-more" id="exp-more" type="button" aria-label="Show all work experience">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+    </div>
+    <div class="e-panel" id="ep-edu">
+      <div class="e-list" id="exp-edu-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ─────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="s-head reveal">
+      <h2 class="s-title">About</h2>
+      <div class="s-rule"></div>
+    </div>
+    <div class="about-cols reveal">
+      <div class="a-photo">
+        <img src="images/photo_2025-11-20_14-00-59.jpg" alt="Anna Kovalenko">
+        <div class="a-photo-hint">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="a-text">
+        <h2 class="a-name">Anna<br>Kovalenko</h2>
+        <p class="a-title">2D Game Artist &amp; Concept Artist</p>
+        <div class="a-bio">
+          <p>2D game and concept artist based in Kyiv, Ukraine. Artium Magister graduate of the National Academy of Fine Arts and Architecture — a foundation in classical composition, colour, and illustration that shapes everything I make.</p>
+          <p>I work across diverse game projects - casual, semi-realistic, and realistic - covering the full range from promotional art and UI design to environment concepts and character work. Past clients include Wargaming, Nike, EA Sports, Sony, and Hermès.</p>
+          <p>Beyond production work, I've taken on lead responsibilities — onboarding and mentoring 10+ designers, and guiding teams through full project transitions.</p>
+        </div>
+        <div class="a-stats">
+          <div class="a-stat">
+            <span class="a-stat-n">8+</span>
+            <span class="a-stat-l">Years work experience</span>
+          </div>
+          <div class="a-stat">
+            <span class="a-stat-n">10</span>
+            <span class="a-stat-l">Studios worked with</span>
+          </div>
+          <div class="a-stat">
+            <span class="a-stat-n">M.A.</span>
+            <span class="a-stat-l">Fine Arts degree</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sw-blocks reveal">
+      <div class="sw-block">
+        <p class="sw-label">Software</p>
+        <div class="sw-row" id="sw-row"></div>
+      </div>
+      <div class="sw-block">
+        <p class="sw-label">AI Tools</p>
+        <div class="sw-row" id="ai-row"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ───────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="s-head reveal">
+      <h2 class="s-title">Contact</h2>
+      <div class="s-rule"></div>
+    </div>
+    <div class="reveal">
+      <p class="c-intro">Available for freelance &amp; full-time · Feel free to reach out</p>
+      <a class="c-email" href="mailto:annkovalenkoartist@gmail.com">annkovalenkoartist@gmail.com</a>
+      <div class="social-row">
+        <a class="soc-link" href="https://www.linkedin.com/in/anna-kovalenko-conceptartist" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+        </a>
+        <!-- Add more socials as needed -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  <span class="f-copy">© 2025 Anna Kovalenko</span>
+  <a class="f-top" href="#intro">Back to top ↑</a>
+</footer>
+
+<!-- ── LIGHTBOX ──────────────────────────────────────────────── -->
+<div class="lb" id="lb">
+  <div class="lb-box">
+    <div class="lb-head">
+      <div>
+        <span class="lb-cat" id="lb-cat"></span>
+        <h3 class="lb-title" id="lb-title"></h3>
+      </div>
+      <button class="lb-x" id="lb-x" aria-label="Close project details">×</button>
+    </div>
+    <div class="lb-canvas" id="lb-canvas"></div>
+  </div>
+</div>
+
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  PORTFOLIO DATA
+//  Категории: "professional" | "personal"
+//  Добавляй работы: { img: "images/...", title: "Название", category: "professional", cat: "вторичное описание" }
+//  category контролирует фильтр, cat — вторичное описание
+// ════════════════════════════════════════════════════════════════
+const WORKS = [
+  // PROFESSIONAL
+  {
+    img: "promo_wargaming/promo_wargaming.png",
+    title: "Autumn Essential",
+    category: "professional",
+    cat: "for Wargaming as part of the World of Warships",
+    desc: `Promotional illustration created for Wargaming as part of the World of Warships: Legends Autumn Essential campaign for Xbox and PlayStation Plus players.
+    My work focused on scene assembly, composition, lighting, and final promotional render using existing materials.`,
+    year: "2025",
+    role: "2D Artist",
+    tools: "Photoshop & Blender",
+    orderAll: 1,
+    orderInCategory: 1,
+    blocks: [
+      { type: "image", src: "promo_wargaming/promo_wargaming.png" },
+      { type: "text", text: `Promotional illustration created for Wargaming as part of the World of Warships: Legends Autumn Essential campaign for Xbox and PlayStation Plus players.\nMy work focused on scene assembly, composition, lighting, and final promotional render using existing materials.` }
+    ]
+  },
+  {
+  img: "2D Overpaint Casual Gate/Door.png",
+  title: "2D Overpaint Casual Gate",
+  category: "personal",
+  cat: "2D overpaint study",
+  desc: `A 2D overpaint study created for use in casual and mid-core game environments. Designed to explore lighting, form readability, and painterly detail while maintaining a cohesive and friendly visual style suitable for casual gameplay. This piece demonstrates an overpaint workflow - refining initial shapes into a polished graphic that can be used as a game background element or decorative scene prop in casual titles`,
+  year: "2025",
+  role: "2D Artist",
+  tools: "Photoshop & Blender",
+  orderAll: 2,
+  orderInCategory: 1,
+  blocks: [
+      { type: "image", src: "2D Overpaint Casual Gate/Door.png" },
+      { type: "text", text: `A 2D overpaint study created for use in casual and mid-core game environments. Designed to explore lighting, form readability, and painterly detail while maintaining a cohesive and friendly visual style suitable for casual gameplay.` },
+      { type: "image", src: "2D Overpaint Casual Gate/Final.png" }
+    ]
+  },
+
+  {
+  img: "House on the Swamp/isometri_kovalenko_anna_color_dz_26.png",
+  title: "House on the Swamp",
+  category: "personal",
+  cat: "House in isometry.",
+  desc: "",
+  year: "2025",
+  role: "2D Artist",
+  tools: "Photoshop & Blender",
+  orderAll: 3,
+  orderInCategory: 2,
+  blocks: [ 
+    { type: "image", src: "House on the Swamp/isometri_kovalenko_anna_color_dz_26.png"},
+    { type: "text", text: `Searching and finalizing ideas at the sketch stage.`},
+    { type: "image", src: "House on the Swamp/Без имени-1.jpg"},
+    { type: "text", text: `Creating line art and atmosphere in the project.`},
+    { type: "image", src: "House on the Swamp/Line_color_ton_house.jpg"},
+    { type: "text", text: `Final render.`},
+    { type: "image", src: "House on the Swamp/isometri_kovalenko_anna_color_dz_26.png"}
+  ]
+  },
+
+  {
+  img: "Match 3 Game/5.png",
+  title: "Aqua Clash",
+  category: "personal",
+  cat: "Match 3 Game",
+  desc:"",
+  year: "2025",
+  role: "2D artist & concept artist",
+  tools: "Photoshop",
+  orderAll: 5,
+  orderInCategory: 4,
+  blocks: [
+    {type: "image", src: "Match 3 Game/Match2_windows+open_Kovalenko_Anna_DZ_23.jpg"},
+    {type: "image", src: "Match 3 Game/Match2_store_2_Kovalenko_Anna_DZ_23.jpg"},
+    {type: "image", src: "Match 3 Game/Match2_pole_windows_Kovalenko_Anna_DZ_23.jpg"},
+    {type: "image", src: "Match 3 Game/3 (3).png"},
+    {type: "image", src: "Match 3 Game/Match2_pole_fishki_Kovalenko_Anna_DZ_22_8_Dark.jpg"},
+    {type: "image", src: "Match 3 Game/4.png"}
+  ]
+  },
+
+  {
+  img: "Witch’s Cauldron/Kovalenko_Anna_DZ_13_props_color_atmosfera_final_00 (2).jpg",
+  title: "Witch’s Cauldron",
+  category: "personal",
+  cat: "Stylized Game Props",
+  desc: "",
+  year: "2025",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & Blender", 
+  orderAll: 4,
+  orderInCategory: 3,
+  blocks: [
+    { type: "text", text: ` Project Brief. Stylized game props series centered around a witch’s cauldron and magical accessories. The goal of this project was to design a cohesive prop set with strong silhouette readability, clear shape language, and consistent lighting suitable for casual / mid-core game environments. The focus was on production-ready visuals that remain readable at small scale and fit seamlessly into a stylized fantasy game pipeline.
+    Silhouette Exploration.
+    Multiple silhouette variations were explored to find the most readable and visually appealing forms. Priority was given to bold, simple shapes that would remain recognizable at small in-game sizes. Strong silhouette hierarchy was used to clearly separate primary and secondary elements.`},
+    { type: "image", src: "Witch’s Cauldron/Line and idea (2).png"},
+    { type: "text", text: ` Color & Value Exploration. Several color and value options were tested to establish a balanced palette and maintain good contrast between materials. The final palette was chosen to support a warm, magical atmosphere while preserving readability and form clarity.`},
+    { type: "image", src: "Witch’s Cauldron/Color and atmosfera (2).png"},
+    { type: "image", src: "Witch’s Cauldron/Tone_atmosfera (2).jpg"},
+    { type: "text", text: `The final cauldron design focuses on a strong central silhouette, clear volume definition, and readable details optimized for game use. The design is intended to work both as a standalone prop and as part of a larger environment set.`},
+    { type: "image", src: "Witch’s Cauldron/Kovalenko_Anna_DZ_13_props_color_atmosfera_final_00 (2).jpg"},
+    { type: "text", text: `Basic Blockouts. Simple blockouts were used to validate proportions, volumes, and overall composition before moving into detailed rendering. This step helped ensure solid structure and prevented over-detailing too early in the process.`},
+    { type: "image", src: "Witch’s Cauldron/100535.png"},
+    { type: "image", src: "Witch’s Cauldron/100553.png"},
+    { type: "text", text: `After blockout validation, paint-overs were used to refine shapes, lighting, and material definition.`},
+    { type: "image", src: "Witch’s Cauldron/Pumking_casual.png"},
+    { type: "text", text: `A cohesive set of stylized props built around a witch’s cauldron theme. Focused on production readiness, silhouette readability, and visual consistency. Demonstrated ability to move ideas from sketches to finalized game assets.​​​​​​​`}
+  ]
+  },
+
+
+  {
+  img: "stylized textures/Kovalenko_Anna_DZ_5 (2).png",
+  title: "Casual Textures",
+  category: "personal", 
+  cat: "stylized textures",
+  desc: "",
+  year: "2025",
+  role: "2D Artist",
+  tools: "Photoshop",
+  orderAll: 7,
+  orderInCategory: 6,
+  blocks: [
+    { type: "text", text: `A set of stylized textures created for use in casual and mid-core games. Designed with a focus on clean shapes, clear value separation, and visual readability at small scale. These textures are suitable for game props, environments, and decorative elements, and are intended to integrate easily into casual game pipelines while maintaining a cohesive, friendly visual style.`},
+    { type: "image", src: "stylized textures/Kovalenko_Anna_DZ_5 (2).png"},
+    { type: "image", src: "stylized textures/texture_house.jpg"}
+  
+  ]
+  },
+
+  {
+  img: "Book of the Forest Witch/112946.png",
+  title: "Book of the Forest Witch",
+  category: "personal", 
+  cat: "Stylized Game Props",
+  desc: "",
+  year: "2025",
+  role:"2D artist & concept artist",
+  tools: "Photoshop & Blender", 
+  orderAll: 6,
+  orderInCategory: 5,
+  blocks: [
+    { type: "text", text: `Search for an idea and create a line.`},
+    { type: "image", src: "Book of the Forest Witch/line_ton_book.png"},
+    { type: "text", text: `Creating tone and light.`},
+    { type: "image", src: "Book of the Forest Witch/Svitlo_ton.jpg"},
+    { type: "text", text: `Search for a color solution.`},
+    { type: "image", src: "Book of the Forest Witch/color.png"},
+    { type: "text", text: `Render process.`},
+    { type: "image", src: "Book of the Forest Witch/render.jpg"},
+    { type: "text", text: `And present this job with 3D model + overpaint 2D render`},
+    { type: "image", src: "Book of the Forest Witch/112946.png"},
+  ]
+
+  },
+
+  {
+  img: "Photobash/001141.png",
+  title: "Photobash",
+  category: "personal",
+  cat: "environmental concepts",
+  desc: "",
+  year: "2022",
+  role: "2D artist & concept artist",
+  tools: "Photoshop",
+  orderAll: 8,
+  orderInCategory: 7,
+  blocks: [
+    { type: "text", text: `Practice creating environmental concepts using photobash technique.`},
+    { type: "image", src: "Photobash/001141.png"},
+    { type: "image", src: "Photobash/001302.png"},
+    { type: "image", src: "Photobash/001354.png"},
+  ]
+  },
+
+  {
+  img: "anatomy/000 (2).png",
+  title: "anatomy studies",
+  category: "personal",
+  cat: "a series of anatomy studies",
+  desc: "",
+  year: "2025",
+  role: "2D artist",
+  tools: "Photoshop",
+  orderAll: 9,
+  orderInCategory: 8,
+  blocks: [
+    { type: "text", text: `This project is a result of a series of anatomy studies focused on understanding the structure and proportions of the human body. The goal was to explore volume, muscle placement, and form from different angles.`},
+    { type: "image", src: "anatomy/1 (2).png"},
+    { type: "image", src: "anatomy/2 (2).png"},
+    { type: "image", src: "anatomy/3 (2).png"},
+    { type: "image", src: "anatomy/poses_wip_01.png"},
+    { type: "text", text: `A series of grayscale studies focused on simplified head construction.`},
+    { type: "image", src: "anatomy/simplified_construction_03_wip1.png"},
+    { type: "image", src: "anatomy/simplified_construction_03_wip2.png"},
+    { type: "text", text: `Figure studies from life and reference, focusing on proportions and human anatomy.`},
+    { type: "image", src: "anatomy/1.png"},
+    { type: "image", src: "anatomy/2.png"},
+    { type: "image", src: "anatomy/3.png"},
+    { type: "image", src: "anatomy/poses_wip_02.png"},
+
+  ]
+  },
+
+  {
+img: "The Witcher 3 Wild Hunt — Promotional Fan Art/anna-kovalenko-011.jpg",
+title: "Promotional Fan Art",
+category: "personal",
+cat: "A set of cinematic promotional fan art concepts inspired by The Witcher 3: Wild Hunt.",
+desc: "",
+year: "2025",
+role: "",
+tools: "Photoshop",
+orderAll: 10,
+orderInCategory: 9,
+blocks: [
+  { type: "text", text: `A set of cinematic promotional fan art concepts inspired by The Witcher 3: Wild Hunt.`},
+  { type: "image", src: "The Witcher 3 Wild Hunt — Promotional Fan Art/anna-kovalenko-011.jpg"},
+  { type: "image", src: "The Witcher 3 Wild Hunt — Promotional Fan Art/anna-kovalenko-033.jpg"},
+  { type: "image", src: "The Witcher 3 Wild Hunt — Promotional Fan Art/anna-kovalenko-poster-final1v2-artstation-1.jpg"},
+  { type: "image", src: "The Witcher 3 Wild Hunt — Promotional Fan Art/anna-kovalenko-poster-2v2.jpg"},
+  { type: "image", src: "The Witcher 3 Wild Hunt — Promotional Fan Art/anna-kovalenko-poster-final1v2-0.jpg"},
+  { type: "image", src: "The Witcher 3 Wild Hunt — Promotional Fan Art/anna-kovalenko-poster-2v2-0.jpg"}
+]
+  },
+
+  {
+  img: "banners/thumbnail 1.png",
+  title: "WARNET life",
+  category: "professional",
+  cat: "Promotional illustration",
+  desc:"",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 11,
+  orderInCategory: 2,
+  blocks: [
+    { type: "text", text: `Promotional illustrations and game banner for console game.`},
+    { type: "image", src: "banners/Banner 1.jpg"}
+]
+  },
+
+   {
+  img: "banners/thumbnail 2.png",
+  title: "Street FOOD simulator",
+  category: "professional",
+  cat: "Promotional illustration",
+  desc:"",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 12,
+  orderInCategory: 3,
+  blocks: [
+    { type: "text", text: `Promotional illustrations and game banner for console game.`},
+    { type: "image", src: "banners/banner 2.png"},
+    { type: "text", text: `Sketches for this project.`},
+    { type: "image", src: "banners/sketch 2.png"}
+]
+  },
+
+   {
+  img: "banners/thumbnail 3.png",
+  title: "Scary RING",
+  category: "professional",
+  cat: "Promotional illustration",
+  desc:"",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 13,
+  orderInCategory: 4,
+  blocks: [
+    { type: "text", text: `Promotional illustrations and game banner for console game.`},
+    { type: "image", src: "banners/Banner 3.png"},
+    { type: "text", text: `Sketches for this project.`},
+    { type: "image", src: "banners/sketch 3.png"}
+]
+  },
+
+   {
+  img: "banners/thumbnail 4.png",
+  title: "Scary shawarma shop",
+  category: "professional",
+  cat: "Promotional illustration",
+  desc:"",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 14,
+  orderInCategory: 5,
+  blocks: [
+    { type: "text", text: `Promotional illustrations and game banner for console game.`},
+    { type: "image", src: "banners/banner 4.png"},
+    { type: "text", text: `Sketches for this project.`},
+    { type: "image", src: "banners/sketch 4.jpg"}
+]
+  },
+
+   {
+  img: "banners/thumbnail 5.png",
+  title: "CAPTIVE",
+  category: "professional",
+  cat: "Promotional illustration",
+  desc:"",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 15,
+  orderInCategory: 6,
+  blocks: [
+    { type: "text", text: `Promotional illustrations and game banner for console game.`},
+    { type: "image", src: "banners/Banner 5.png"},
+    { type: "text", text: `Sketches for this project.`},
+    { type: "image", src: "banners/sketch 5.png"}
+]
+  },
+
+   {
+  img: "banners/thumbnail 6.png",
+  title: "Smash CAT",
+  category: "professional",
+  cat: "Promotional illustration",
+  desc:"",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 16,
+  orderInCategory: 7,
+  blocks: [
+    { type: "text", text: `Promotional illustrations and game banner for console game.`},
+    { type: "image", src: "banners/Banner 6.png"},
+    { type: "text", text: `Sketches for this project.`},
+    { type: "image", src: "banners/sketch 6.png"}
+]
+  },
+  {
+  img: "goose/2.png",
+  title: "Goose",
+  category: "professional",
+  cat: "icon for slot game",
+  desc: "",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 17,
+  orderInCategory: 8,
+  blocks: [
+    { type: "text", text: `A stylized slot game symbol created for a casual mobile game.`},
+    { type: "image", src: "goose/1.png"},
+    { type: "text", text: `Sketches for this project.`},
+    { type: "image", src: "goose/sketch (2).png"}
+  ]
+  },
+  {
+  img: "arabian night/2.png",
+  title: "Arabian night",
+  category: "personal",
+  cat: "Illustration as part of the test task for an AAA game studio.",
+  desc: "",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop & AI instruments",
+  orderAll: 18,
+  orderInCategory: 10,
+  blocks: [
+    { type: "text", text: `Promo illustration themed around Arabian Nights`},
+    { type: "image", src: "arabian night/1.png"},
+    { type: "text", text: `Sketches for this project.`},
+    { type: "image", src: "arabian night/draft.png"}
+  ]
+  },
+  {
+  img: "forest nymph/1.png",
+  title: "Mavka",
+  category: "personal",
+  cat: "Mavka Character Concept",
+  desc: "",
+  year: "2026",
+  role: "2D artist & concept artist",
+  tools: "Photoshop",
+  orderAll: 19,
+  orderInCategory: 11,
+  blocks: [
+    { type: "text", text: `Mavka Character Concept`},
+    { type: "image", src: "forest nymph/2.png"}
+  ]
+
+  }
+  
+];
+
+const EXP_PRO = [
+  {
+    logo: "images/upscalestudio_logo.jpg",
+    init: "US",
+    role: " 2D Marketing Artist",
+    company: "Upscale Studio",
+    dates: "2026 -  Present",
+    desc: `Create marketing and store assets for indie games released on Nintendo Switch, PlayStation, and Xbox, including key art, capsule art, banners, achievement icons, and storefront promotional visuals.`
+  },
+  {
+    logo: "images/retro-style-game-logo.jpg",
+    init: "RT",
+    role: " 2D Artist",
+    company: "Retro Style Game",
+    dates: "2025 - 2026",
+    desc: `Outsource 2D artist on multiple game and slot projects - symbols, characters, backgrounds, and UI across casual to semi-realistic art styles. Integrated AI-assisted workflows (Stable Diffusion, Leonardo AI) for accelerated ideation while maintaining full artistic control.`
+  },
+
+  {
+    logo: "images/amigo_gaming_logo.jpg",
+  init: "AG",
+  role: " 2D Artist (contract for 3 months)",
+  company: "Amigo Gaming",
+  dates: "2025",
+  desc: `Contract 2D artist on a dedicated 3-month slot production. Delivered the complete visual package, including characters, symbols, backgrounds, icons, and production-ready game assets`
+  },
+
+  {
+    logo: "images/kava_studio_logo.jpg",
+  init: "KA",
+  role: " 2D Artist (projects-based contract)",
+  company: "KAVA Gaming Studio", 
+  dates: " 2025",
+  desc: `Contract 2D artist across three independent projects for Wargaming and Plarium.  Created in-game assets, promotional illustrations, and Playable Ads in multiple art styles, from casual to stylized.`
+},
+
+{
+  logo: "images/24play_llc_logo.jpg",
+  init: "24",
+  role: "Concept Artist",
+  company: "24Play LLC",
+  dates: "2025",
+  desc: `Concept artist in a 10+ person team, producing environment and character concepts for casual games at 2–3 days per concept before 3D handoff. Delivered Blender blockouts and Photoshop paint-overs directly to the 3D department.`
+},
+
+{
+  logo: "images/vistaprint_logo.jpg",
+  init: "VP",
+  role: " Senior Product Designer",
+  company: "Vista Print",
+  dates: "2024 - 2025",
+  desc: `Worked on product design after company restructuring, contributing to print product lines and internal visual systems. Collaborated with Product and Strategy teams within established brand frameworks.`
+},
+
+{
+  logo: "images/crello_logo.jpg",
+  init: "VC",
+  role: "Graphic Designer - Senior Graphic Designer",
+  company: "Vista Create (formerly Crello)",
+  dates: "2021 - 2024 ",
+  desc: `Grew from Designer to Senior over 3 years.  Onboarded 10+ designers during a full project transition; helped scale template output for small businesses from a two-person team to a structured unit.` 
+},
+
+{
+  logo: "images/areyes_studio_logo.jpg",
+  init: "AR",
+  role: "Concept Artist",
+  company: "AREYES Studio",
+  dates: "2022 - 2024",
+  desc: `2D and concept artist for mobile games and branded campaigns. Delivered full visual packages for clients including Nike, EA Sports, Sony, NBA, and Hermès in 1–2 week cycles.`
+},
+
+{ 
+  init: "PR",
+  role: "Designer",
+  company: "Perspective",
+  dates: "2019-2021",
+  desc: `Designed albums and other printed products, edited layouts, and prepared files for print.`
+}
+];
+
+const EXP_EDU = [
+  {
+  logo: "images/naoma_edu_logo.jpg",
+  init: "NAOMA",
+  role: "Artium Magister, Graphic Arts",
+  company: "National Academy of Fine Arts and Architecture",
+  dates: "2014 - 2020",
+  desc: `In-depth study of classical drawing and painting. Classical, old-printmaking techniques. Comprehensive study of composition, illustration, and stylization.Book design, layout, and illustration.`
+  },
+
+  {
+  logo: "images/artcraftcgschool_logo.jpg",
+  init: "ART",
+  role: "Concept Art & Landscape (Base) - Concept Art & Landscape (Advanced)",
+  company: "ArtCraft Education",
+  dates: "2020 - 2022",
+  desc: `Environment concept art for games & films: intensive focus on composition, colour, photobashing and matte painting. Complete landscape workflow: thumbnails, colour keys, 3D blockouts, paintovers, final production scenes. 3D acceleration: kitbashing and modeling in Blender to iterate environments quickly.`
+  },
+
+  {
+  logo: "images/skvot_logo.jpg",
+  init: "SKV",
+  role: "Concept Artist for AAA games",
+  company: "SKVOT online school",
+  dates: "In progress",
+  desc: `Composition, Perspective & Sketching: Craft immersive, production-ready visuals with strong layout, spatial accuracy, and rapid concept ideation. Color, Lighting & Stylization: Apply advanced color theory, lighting, and stylization to enhance atmosphere, readability, and narrative impact. Anatomy & Design (Characters): Develop original, AAA-grade characters,grounded in anatomy andform.  3D Pipeline (Blender): Model, shader, and integrate high-quality 3D concepts using Blender.`
+  },
+
+];
+
+const SOFTWARE = [
+  { abbr: "Ps", name: "Adobe Photoshop" },
+  { abbr: "Ai", name: "Adobe Illustrator" },
+  { abbr: "Id", name: "Adobe InDesign" },
+  { abbr: "Bl", name: "Blender" },
+  { abbr: "My", name: "Maya" },
+  { abbr: "SP", name: "Substance Painter" },
+  { abbr: "3D", name: "3DCoat" },
+  { abbr: "WC", name: "World Creator" },
+  { abbr: "CU", name: "ComfyUI" },
+];
+
+const AI_TOOLS = [
+  { abbr: "SD", name: "Stable Diffusion" },
+  { abbr: "LA", name: "Leonardo AI" },
+  { abbr: "Fo", name: "Fooocus" },
+  { abbr: "GA", name: "Google AI Studio" },
+  { abbr: "OA", name: "OpenAI API" },
+];
+
+const ROLES = ["2D Game Artist", "Concept Artist", "Promo Illustrator", "Character Artist"];
+const CAT_LABEL = { professional: "Professional", personal: "Personal" };
+
+
+// ─── PORTFOLIO ────────────────────────────────────────────────────
+const grid = document.getElementById('p-grid');
+const moreBtn = document.getElementById('p-more');
+const WORKS_PER_PAGE = 9;
+// Portfolio grid column count changes across breakpoints (see .p-grid
+// media queries above): 5 cols on ultra-wide (>=2340px), 4 cols on
+// wide (1900-2339px), otherwise the default page size of 9 applies.
+// We want a whole number of rows visible before the "show more" arrow:
+// 2 rows x 5 cols = 10, 3 rows x 4 cols = 12.
+function getPortfolioPageSize() {
+  const w = window.innerWidth;
+  if (w >= 2340) return 10;
+  if (w >= 1900) return 12;
+  return WORKS_PER_PAGE;
+}
+let currentFilter = 'all';
+let visibleWorks = getPortfolioPageSize();
+
+function renderWorks(f) {
+  currentFilter = f;
+  let items = f === 'all' ? WORKS : WORKS.filter(w => w.category === f);
+  // Sort by orderAll for 'all', or by orderInCategory for specific categories
+  items = items.sort((a, b) => {
+    if (f === 'all') {
+      return (a.orderAll || 999) - (b.orderAll || 999);
+    } else {
+      return (a.orderInCategory || 999) - (b.orderInCategory || 999);
+    }
+  });
+  if (!items.length) {
+    grid.innerHTML = `<div class="p-empty">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".3">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <p>Add images to the WORKS array above</p>
+    </div>`;
+    moreBtn.classList.remove('show');
+    return;
+  }
+  const shownItems = items.slice(0, visibleWorks);
+  grid.innerHTML = shownItems.map(w => {
+    const idx = WORKS.indexOf(w);
+    return `<div class="p-card" data-idx="${idx}">
+      <img src="${w.img}" alt="${w.title}" loading="lazy">
+      <div class="p-ov"><div class="p-info">
+        <span class="p-title">${w.title}</span>
+        <span class="p-cat">${w.cat || CAT_LABEL[w.category] || w.category}</span>
+      </div></div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.p-card').forEach(c =>
+    c.addEventListener('click', () => openLB(WORKS[+c.dataset.idx])));
+  moreBtn.classList.toggle('show', visibleWorks < items.length);
+}
+renderWorks('all');
+
+moreBtn.addEventListener('click', () => {
+  visibleWorks += getPortfolioPageSize();
+  renderWorks(currentFilter);
+});
+
+document.querySelectorAll('.f-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.f-btn').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    visibleWorks = getPortfolioPageSize();
+    renderWorks(b.dataset.f);
+  });
+});
+
+
+// ─── EXPERIENCE ───────────────────────────────────────────────────
+function expHTML(arr) {
+  return arr.map(e => `
+    <div class="e-item">
+      <div class="e-logo">
+        ${e.logo ? `<img src="${e.logo}" alt="${e.company} logo">` : ``}
+      </div>
+      <div>
+        <p class="e-role">${e.role}</p>
+        <p class="e-company">${e.company}</p>
+        <p class="e-dates">${e.dates}</p>
+        <div class="e-desc-block">${e.desc.split('\n').filter(Boolean).map(p => `<p class="e-desc">${p}</p>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+const EXP_PRO_VISIBLE = 2;
+const expProList = document.getElementById('exp-pro-list');
+const expMoreBtn = document.getElementById('exp-more');
+let expProExpanded = false;
+
+function renderExpPro() {
+  const items = expProExpanded ? EXP_PRO : EXP_PRO.slice(0, EXP_PRO_VISIBLE);
+  expProList.innerHTML = expHTML(items);
+  expMoreBtn.classList.toggle('show', !expProExpanded && EXP_PRO.length > EXP_PRO_VISIBLE);
+}
+renderExpPro();
+expMoreBtn.addEventListener('click', () => {
+  expProExpanded = true;
+  renderExpPro();
+});
+
+document.getElementById('exp-edu-list').innerHTML = expHTML(EXP_EDU);
+
+document.querySelectorAll('.e-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.e-tab').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.e-panel').forEach(x => x.classList.remove('on'));
+    t.classList.add('on');
+    document.getElementById('ep-' + t.dataset.ep).classList.add('on');
+  });
+});
+
+
+// ─── SOFTWARE ─────────────────────────────────────────────────────
+document.getElementById('sw-row').innerHTML = SOFTWARE.map(s =>
+  `<div class="sw-item"><div class="sw-box">${s.abbr}</div>${s.name}</div>`
+).join('');
+document.getElementById('ai-row').innerHTML = AI_TOOLS.map(s =>
+  `<div class="sw-item"><div class="sw-box">${s.abbr}</div>${s.name}</div>`
+).join('');
+
+
+// ─── TYPEWRITER ───────────────────────────────────────────────────
+const tw = document.getElementById('tw');
+let ri = 0, ci = 0, del = false;
+function tick() {
+  const w = ROLES[ri];
+  tw.textContent = del ? w.slice(0, ci--) : w.slice(0, ci++);
+  if (!del && ci > w.length) { setTimeout(() => { del = true; tick(); }, 1700); return; }
+  if (del  && ci < 0)        { del = false; ri = (ri+1) % ROLES.length; ci = 0; setTimeout(tick, 350); return; }
+  setTimeout(tick, del ? 40 : 70);
+}
+tick();
+
+
+// ─── NAV + ACTIVE SECTION ─────────────────────────────────────────
+const navEl = document.getElementById('nav');
+const navLinks = document.querySelectorAll('.nav-links a');
+const sections = ['intro','portfolio','experience','about','contact'];
+
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('solid', window.scrollY > 60);
+  let curr = 'intro';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) curr = id;
+  });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + curr));
+}, { passive: true });
+
+
+// ─── SCROLL REVEAL ────────────────────────────────────────────────
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+
+// ─── LIGHTBOX ─────────────────────────────────────────────────────
+const lb   = document.getElementById('lb');
+const lbCat = document.getElementById('lb-cat');
+const lbTitle = document.getElementById('lb-title');
+const lbCanvas = document.getElementById('lb-canvas');
+
+function renderProjectBlocks(work) {
+  const blocks = (work.blocks && work.blocks.length > 0) ? work.blocks : [
+    { type: "image", src: work.img, alt: work.title },
+    { type: "text", text: work.desc || "Project description will be added soon." },
+    ...(work.extra || []).map(src => ({ type: "image", src, alt: `${work.title} additional image` }))
+  ];
+
+  const meta = [
+    work.year ? ["Year", work.year] : null,
+    work.role ? ["Role", work.role] : null,
+    work.tools ? ["Tools", work.tools] : null,
+  ].filter(Boolean);
+
+  const blocksHTML = blocks.map(block => {
+    if (block.type === "image") {
+      return `<img class="lb-block-img" src="${block.src}" alt="${block.alt || work.title}" loading="lazy">`;
+    }
+    if (block.type === "text") {
+      const paragraphs = String(block.text || "")
+        .split("\n")
+        .filter(Boolean)
+        .map(p => `<p>${p}</p>`)
+        .join("");
+      return `<div class="lb-block-text">${paragraphs}</div>`;
+    }
+    return "";
+  }).join("");
+
+  const metaHTML = meta.length ? `<div class="lb-meta">${meta.map(([label, value]) =>
+    `<div class="lb-meta-row"><span>${label}</span><span>${value}</span></div>`
+  ).join("")}</div>` : "";
+
+  return (blocksHTML + metaHTML) || `<div class="lb-empty">Project content will be added soon</div>`;
+}
+
+function openLB(work) {
+  lbCat.textContent = CAT_LABEL[work.category] || work.category || work.cat;
+  lbTitle.textContent = work.title;
+  lbCanvas.innerHTML = renderProjectBlocks(work);
+  document.querySelector('.lb-box').scrollTop = 0;
+  lb.classList.add('open'); document.body.style.overflow = 'hidden';
+}
+function closeLB() {
+  lb.classList.remove('open'); document.body.style.overflow = '';
+}
+document.getElementById('lb-x').addEventListener('click', closeLB);
+lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLB(); });
+</script>
+</body>
+</html>
